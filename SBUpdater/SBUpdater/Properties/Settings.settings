@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SBUpdater.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DataBaseName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">amfito_ocart</Value>
+    </Setting>
+    <Setting Name="DatabaseUserId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">amfito_ocart</Value>
+    </Setting>
+    <Setting Name="DatabasePassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AsTrayt2246!</Value>
+    </Setting>
+    <Setting Name="DatabaseServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">vesta.beget.ru</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

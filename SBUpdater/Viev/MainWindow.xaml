@@ -1,0 +1,103 @@
+﻿<Window x:Class="SBUpdater.Viev.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:model="clr-namespace:SBUpdater.ModelViev"
+        xmlns:manuf="clr-namespace:SBUpdater.Manufacturers"
+        Title="Обновление прайса магазина ServiceBuild" Height="450" Width="600">
+    <Window.Resources>
+        <model:MainWindowModelBase x:Key="Model"/>
+        <manuf:Bosch x:Key="Bosch"/>
+        <manuf:Bahco x:Key="Bahco"/>
+        <manuf:Bars x:Key="Bars"/>
+        <manuf:BauMaster x:Key="BauMaster"/>
+        <manuf:Denzel x:Key="Denzel"/>
+        <manuf:Energomash x:Key="Energomash"/>
+        <manuf:GreenBosch x:Key="GreenBosch"/>
+        <manuf:Gross x:Key="Gross"/>
+        <manuf:Hitachi x:Key="Hitachi"/>
+        <manuf:Irwin x:Key="Irwin"/>
+        <manuf:Kapriol x:Key="Kapriol"/>
+        <manuf:Kraftool x:Key="Kraftool"/>
+        <manuf:Matrix x:Key="Matrix"/>
+        <manuf:Palisad x:Key="Palisad"/>
+        <manuf:PalisadCamping x:Key="PalisadCamping"/>
+        <manuf:Rapid x:Key="Rapid"/>
+        <manuf:Russia x:Key="Russia"/>
+        <manuf:Shurup x:Key="Shurup"/>
+        <manuf:Sibrteh x:Key="Sibrteh"/>
+        <manuf:Skil x:Key="Skil"/>
+        <manuf:Soyuz x:Key="Soyuz"/>
+        <manuf:Sparky x:Key="Sparky"/>
+        <manuf:Sparta x:Key="Sparta"/>
+        <manuf:Stanley x:Key="Stanley"/>
+        <manuf:Stels x:Key="Stels"/>
+        <manuf:Stayer x:Key="Stayer"/>
+        <manuf:Stern x:Key="Stern"/>
+        <manuf:Sturm x:Key="Sturm"/>
+        <manuf:Zubr x:Key="Zubr"/>
+        <manuf:Phiolent x:Key="Phiolent"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource Model}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <ComboBox Width="200" Height="50" MaxDropDownHeight="200">
+            <Button Content="Получить прайс BlueBosch" DataContext="{StaticResource Bosch}" Command="{Binding UpdateBlueBoschPrice}"/>
+            <Button Content="Получить прайс Skil" DataContext="{StaticResource Skil}" Command="{Binding UpdateSkilPrice}"/>
+            <Button Content="Получить прайс GreenBosch" DataContext="{StaticResource GreenBosch}" Command="{Binding UpdateGreenBoschPrice}"/>
+            <Button Content="Получить прайс Hitachi" DataContext="{StaticResource Hitachi}" Command="{Binding UpdateHitachiPrice}"/>
+            <Button Content="Получить прайс Sparky" DataContext="{StaticResource Sparky}" Command="{Binding UpdateSparkyPrice}"/>
+            <Button Content="Получить прайс Stanley" DataContext="{StaticResource Stanley}" Command="{Binding UpdateStanleyPrice}"/>
+            <Button Content="Получить прайс Irwin" DataContext="{StaticResource Irwin}"  Command="{Binding UpdateIrwinPrice}"/>
+            <Button Content="Получить прайс Bahco" DataContext="{StaticResource Bahco}"  Command="{Binding UpdateBahcoPrice}"/>
+            <Button Content="Получить прайс Kapriol" DataContext="{StaticResource Kapriol}"  Command="{Binding UpdateKapriolPrice}"/>
+            <Button Content="Получить прайс Rapid" DataContext="{StaticResource Rapid}"  Command="{Binding UpdateRapidPrice}"/>
+            <Button Content="Получить прайс Зубр" DataContext="{StaticResource Zubr}"  Command="{Binding UpdateZubrPrice}"/>
+            <Button Content="Получить прайс Stayer" DataContext="{StaticResource Stayer}"  Command="{Binding UpdateStayerPrice}"/>
+            <Button Content="Получить прайс Kraftool" DataContext="{StaticResource Kraftool}"  Command="{Binding UpdateKraftoolPrice}"/>
+            <Button Content="Получить прайс Sturm" DataContext="{StaticResource Sturm}"  Command="{Binding UpdateSturmPrice}"/>
+            <Button Content="Получить прайс Matrix" DataContext="{StaticResource Matrix}"  Command="{Binding UpdateMatrixPrice}"/>
+            <Button Content="Получить прайс Фиолент" DataContext="{StaticResource Phiolent}"  Command="{Binding UpdatePhiolentPrice}"/>
+        </ComboBox>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button Content="Обновить из базы" Margin="5" Command="{Binding UpdateBase}"/>
+            <ComboBox Width="200" Text="Добавить товары" MaxDropDownHeight="200">
+                <Button Content="Получить Bosch" DataContext="{StaticResource Bosch}" Width="180" Command="{Binding UpdateBoschLinks}"/>
+                <Button Content="Получить GreenBosch"  DataContext="{StaticResource GreenBosch}" Width="180" Command="{Binding UpdateGreenBoschLinks}"/>
+                <Button Content="Получить Skil" DataContext="{StaticResource Skil}"  Width="180" Command="{Binding UpdateSkilLinks}"/>
+                <Button Content="Получить Hitachi" DataContext="{StaticResource Hitachi}"  Width="180" Command="{Binding UpdateHitachiLinks}"/>
+                <Button Content="Получить Sparky" DataContext="{StaticResource Sparky}"  Width="180" Command="{Binding UpdateSparkyLinks}"/>
+                <Button Content="Получить Stanley" DataContext="{StaticResource Stanley}"  Width="180" Command="{Binding UpdateStanleyLinks}"/>
+                <Button Content="Получить Irwin" DataContext="{StaticResource Irwin}"  Width="180" Command="{Binding UpdateIrwinLinks}"/>
+                <Button Content="Получить Bahco" DataContext="{StaticResource Bahco}"  Width="180" Command="{Binding UpdateBahcoLinks}"/>
+                <Button Content="Получить Kapriol" DataContext="{StaticResource Kapriol}"  Width="180" Command="{Binding UpdateKapriolLinks}"/>
+                <Button Content="Получить Rapid" DataContext="{StaticResource Rapid}"  Width="180" Command="{Binding UpdateRapidLinks}"/>
+                <Button Content="Получить Зубр" DataContext="{StaticResource Zubr}"  Width="180" Command="{Binding UpdateZubrLinks}"/>
+                <Button Content="Получить Stayer" DataContext="{StaticResource Stayer}"  Width="180" Command="{Binding UpdateStayerLinks}"/>
+                <Button Content="Получить Kraftool" DataContext="{StaticResource Kraftool}"  Width="180" Command="{Binding UpdateKraftoolLinks}"/>
+                <Button Content="Получить Sturm" DataContext="{StaticResource Sturm}"  Width="180" Command="{Binding UpdateSturmLinks}"/>
+                <Button Content="Получить BauMaster" DataContext="{StaticResource BauMaster}"  Width="180" Command="{Binding UpdateBauMasterLinks}"/>
+                <Button Content="Получить Союз" DataContext="{StaticResource Soyuz}"  Width="180" Command="{Binding UpdateSoyuzLinks}"/>
+                <Button Content="Получить Энергомаш"  DataContext="{StaticResource Energomash}"  Width="180" Command="{Binding UpdateEnergomashLinks}"/>
+                <Button Content="Получить Matrix" DataContext="{StaticResource Matrix}"  Width="180" Command="{Binding UpdateMatrixLinks}"/>
+                <Button Content="Получить Gross" DataContext="{StaticResource Gross}"  Width="180" Command="{Binding UpdateGrossLinks}"/>
+                <Button Content="Получить Sparta" DataContext="{StaticResource Sparta}"  Width="180" Command="{Binding UpdateSpartaLinks}"/>
+                <Button Content="Получить Palisad" DataContext="{StaticResource Palisad}"  Width="180" Command="{Binding UpdatePalisadLinks}"/>
+                <Button Content="Получить PalisadCamping" DataContext="{StaticResource PalisadCamping}"  Width="180" Command="{Binding UpdatePalisadCampingLinks}"/>
+                <Button Content="Получить Bars" DataContext="{StaticResource Bars}"  Width="180" Command="{Binding UpdateBarsLinks}"/>
+                <Button Content="Получить Stels" DataContext="{StaticResource Stels}"  Width="180" Command="{Binding UpdateStelsLinks}"/>
+                <Button Content="Получить Sibrteh" DataContext="{StaticResource Sibrteh}"  Width="180" Command="{Binding UpdateSibrtehLinks}"/>
+                <Button Content="Получить Denzel" DataContext="{StaticResource Denzel}"  Width="180" Command="{Binding UpdateDenzelLinks}"/>
+                <Button Content="Получить Stern" DataContext="{StaticResource Stern}"  Width="180" Command="{Binding UpdateSternLinks}"/>
+                <Button Content="Получить Shurup" DataContext="{StaticResource Shurup}"  Width="180" Command="{Binding UpdateShurupLinks}"/>
+                <Button Content="Получить Russia" DataContext="{StaticResource Russia}"  Width="180" Command="{Binding UpdateRussiaLinks}"/>
+                <Button Content="Получить Фиолент" DataContext="{StaticResource Phiolent}"  Command="{Binding UpdatePhiolentLinks}"/>
+
+            </ComboBox>
+
+
+        </StackPanel>
+        <Button Content="Подключиться" Grid.Row="1" HorizontalAlignment="Right" Margin="5" Command="{Binding DatabaseConnect}"/>
+    </Grid>
+</Window>

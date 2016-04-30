@@ -1,0 +1,21 @@
+﻿<Window x:Class="SBUpdater.Viev.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:model="clr-namespace:SBUpdater.ModelViev"
+        Title="Обновление прайса магазина ServiceBuild" Height="450" Width="600">
+    <Window.Resources>
+        <model:MainWindowModelBase x:Key="Model"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource Model}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button Content="Обновить из базы" Margin="5" Command="{Binding UpdateBase}"/>
+            <Button Content="Получить список" Margin="5" Command="{Binding UpdateLinks}"/>
+        </StackPanel>
+        
+       <!-- <Button Content="Подключиться" Grid.Row="1" HorizontalAlignment="Right" Margin="5" Command="{Binding DatabaseConnect}"/>-->
+    </Grid>
+</Window>

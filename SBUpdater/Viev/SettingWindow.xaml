@@ -1,0 +1,55 @@
+﻿<Window x:Class="SBUpdater.Viev.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        Title="Настройка подключения" Height="300" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Button Content="Подключить" Grid.Row="2" HorizontalAlignment="Right" Command="{Binding Connect}" Margin="5" Padding="5,0,5,0"/>
+        <CheckBox Content="Сохранить изменения" Grid.Row="2" Margin="15" Width="200" HorizontalAlignment="Left">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <i:InvokeCommandAction Command="{Binding Checked}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="Unchecked">
+                    <i:InvokeCommandAction Command="{Binding Checked}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </CheckBox>
+        <StackPanel Orientation="Vertical" Margin="20">
+           
+        </StackPanel>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Margin="20">
+                <Label Content="Сервер базы данных"/>
+                <TextBox Text="{Binding DB.DatabaseServer, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="20" Grid.Column="1">
+                <Label Content="Имя базы данных"/>
+                <TextBox Text="{Binding DB.DatabaseName, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Margin="20">
+                <Label Content="Имя пользователя"/>
+                <TextBox Text="{Binding DB.DatabaseUserId, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="20" Grid.Column="1">
+                <Label Content="Пароль пользователя"/>
+                <TextBox Text="{Binding DB.DatabasePassword, UpdateSourceTrigger=PropertyChanged}" FontFamily="../References/#password"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

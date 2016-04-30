@@ -1,0 +1,20 @@
+﻿<Window x:Class="SBUpdater.Viev.EditCategory"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:model="clr-namespace:SBUpdater.ModelViev"
+        Title="Изменение категорий ServiceBuild" Height="450" Width="600">
+    <Window.Resources>
+        <model:MainWindowModelBase x:Key="Model"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource Model}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+        <ComboBox  Margin="10,0"/>
+            <ComboBox Margin="10,0"/>
+            <Button Content="Применить" Padding="5,0" Margin="10,0"/>
+        </StackPanel>
+    </Grid>
+</Window>
