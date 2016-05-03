@@ -255,16 +255,16 @@ namespace SBUpdater.Manufacturers
                         Microsoft.Office.Interop.Excel.Application application = (Microsoft.Office.Interop.Excel.Application)Activator.CreateInstance(Marshal.GetTypeFromCLSID(new Guid("00024500-0000-0000-C000-000000000046")));
                         Workbook workbook = application.Workbooks.Open(dialog.FileName, 0, false, 5, "", "", false, XlPlatform.xlWindows, "", true, false, 0, true, false, false);
                         Worksheet worksheet = (Worksheet)workbook.Sheets[1];
-                        for (int j = 9; j < 1916; j++)
+                        for (int j = 7; j < 2705; j++)
                         {
-                            var model = ((worksheet.Cells[j, 1] as Range).Text).ToString();
-                            if (model == "")
+                            var model = ((worksheet.Cells[j, 5] as Range).Text).ToString();
+                            var status = ((worksheet.Cells[j, 7] as Range).Text).ToString();
+                            if (status == "" || status == "-")
                                 continue;
-                            var priceString = ((dynamic)(worksheet.Cells[j, 14] as Range).Text).ToString();
-                            var price = Convert.ToInt32(int.Parse((priceString).Remove((priceString).IndexOf(',')).Replace(" ", "")) * 0.95);
+                            var price = ((dynamic)(worksheet.Cells[j, 15] as Range).Text).ToString();
                             var item = new Tools
                             {
-                                Price = (decimal)price,
+                                Price = decimal.Parse(price),
                                 Model = model,
                             };
                             list.Add(item);
@@ -281,9 +281,15 @@ namespace SBUpdater.Manufacturers
                                 Connection.Open();
                                 command.ExecuteNonQuery();
                                 Connection.Close();
+                                products.Remove(tools2.Model);
                             }
                             else
-                                File.AppendAllText("products.txt", tools2.Model + "\r\n");
+                                File.AppendAllText("sturm.txt", tools2.Model + "\r\n");
+                        }
+                        File.AppendAllText("sturm.txt", "------------------\r\n");
+                        foreach (var product in products)
+                        {
+                            File.AppendAllText("sturm.txt", product + "\r\n");
                         }
                         MessageBox.Show("Обновление прайса завершено!");
                     }

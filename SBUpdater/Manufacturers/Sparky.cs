@@ -12,6 +12,7 @@ using MySql.Data.MySqlClient;
 using Microsoft.Win32;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace SBUpdater.Manufacturers
 {
@@ -219,28 +220,56 @@ namespace SBUpdater.Manufacturers
                         Microsoft.Office.Interop.Excel.Application application = (Microsoft.Office.Interop.Excel.Application)Activator.CreateInstance(Marshal.GetTypeFromCLSID(new Guid("00024500-0000-0000-C000-000000000046")));
                         Workbook workbook = application.Workbooks.Open(dialog.FileName, 0, false, 5, "", "", false, XlPlatform.xlWindows, "", true, false, 0, true, false, false);
                         Worksheet worksheet = (Worksheet)workbook.Sheets[1];
-                        for (int j = 20; j < 204; j++)
+                        for (int j = 12; j < 183; j++)
                         {
 
-                            if ((worksheet.Cells[j, 2] as Range).Text != "")
+                            if ((worksheet.Cells[j, 1] as Range).Text != "")
                             {
                                 Tools item = new Tools
                                 {
-                                    Price = (decimal)decimal.Parse(((dynamic)(worksheet.Cells[j, 4] as Range).Text).ToString()),
-                                    Sku = (string)((dynamic)(worksheet.Cells[j, 2] as Range).Text).ToString(),
-                                    Model = (string)((dynamic)(worksheet.Cells[j, 1] as Range).Text).ToString()
+                                    Price = (decimal)decimal.Parse(((dynamic)(worksheet.Cells[j, 5] as Range).Text).ToString()),
+                                    Sku = (string)((dynamic)(worksheet.Cells[j, 1] as Range).Text).ToString(),
+                                    Model = (string)((dynamic)(worksheet.Cells[j, 2] as Range).Text).ToString()
                                 };
                                 list.Add(item);
                             }
                         }
                         application.Quit();
+                        var cmdText = "SELECT sku FROM `oc_product` WHERE manufacturer_id = 15";
+                        Connection.Open();
+                        var reader = LoadFromDb(cmdText);
+                        var products = new List<string>();
+                        while (reader.Read())
+                        {
+                            products.Add(reader.GetString(0));
+                        }
+                        Connection.Close();
                         foreach (Tools tools2 in list)
                         {
-                            string cmdText = "UPDATE `oc_product` SET\r\nprice = @price WHERE sku = @sku and manufacturer_id = 15";
-                            MySqlCommand command = new MySqlCommand(cmdText, Connection);
-                            command.Parameters.Add(new MySqlParameter("@sku", tools2.Sku));
-                            command.Parameters.Add(new MySqlParameter("@price", tools2.Price));
-                            command.Parameters.Add(new MySqlParameter("@model", tools2.Model));
+                            if (products.Contains(tools2.Sku))
+                            {
+                                cmdText = "UPDATE `oc_product` SET\r\nprice = @price WHERE sku = @sku and manufacturer_id = 15";
+                                var command = new MySqlCommand(cmdText, Connection);
+                                command.Parameters.Add(new MySqlParameter("@sku", tools2.Sku));
+                                command.Parameters.Add(new MySqlParameter("@price", tools2.Price));
+                                command.Parameters.Add(new MySqlParameter("@model", tools2.Model));
+                                Connection.Open();
+                                command.ExecuteNonQuery();
+                                Connection.Close();
+                                products.Remove(tools2.Sku);
+                            }
+                            else
+                            {
+                                File.AppendAllText("sparky.txt", tools2.Sku + "\r\n");
+                            }
+                        }
+                        File.AppendAllText("sparky.txt", "------------------\r\n");
+                        foreach (var product in products)
+                        {
+                            File.AppendAllText("sparky.txt", product + "\r\n");
+                            cmdText = "UPDATE `oc_product` SET\r\nstatus = 0 WHERE sku = @sku and manufacturer_id = 15";
+                            var command = new MySqlCommand(cmdText, Connection);
+                            command.Parameters.Add(new MySqlParameter("@sku", product));
                             Connection.Open();
                             command.ExecuteNonQuery();
                             Connection.Close();

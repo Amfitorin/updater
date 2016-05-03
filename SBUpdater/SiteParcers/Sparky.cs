@@ -16,7 +16,7 @@
 //{
 //    public class Sparky : MainParcer
 //    {
-        
+
 //        public List<Tools> Products = new List<Tools>();
 //        public List<URLs> CategoryUrls = new List<URLs>();
 //        public List<URLs> ProductUrls = new List<URLs>();
