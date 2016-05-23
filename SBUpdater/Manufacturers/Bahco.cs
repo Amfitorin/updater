@@ -25,8 +25,6 @@ namespace SBUpdater.Manufacturers
             var loaded = false;
             do
             {
-
-
                 try
                 {
                     html.LoadHtml(client.DownloadString(url.Url));
