@@ -29,7 +29,7 @@ namespace SBUpdater.Manufacturers
                 html.LoadHtml(readFromHtml(client.DownloadString(url.Url)));
                 var documentNode = html.DocumentNode;
                 var address = url.CategoryName;
-                var sku = documentNode.SelectSingleNode("//div[@class='prod-art']").InnerText.Split(' ').Last();
+                var sku = documentNode.SelectSingleNode("//div[@class='description']").InnerText.Split('\n')[1].Trim().Replace("Модель:","").Trim();
                 var fileName = (@"Phiolent\" + sku + ".jpg").Replace("\"", "").Replace("/", "").Replace("<", "").Replace(">", "").Replace(":", "");
                 client.DownloadFile(address, fileName);
                 var descr = "";
