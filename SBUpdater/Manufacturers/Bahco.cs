@@ -32,7 +32,7 @@ namespace SBUpdater.Manufacturers
                     html.LoadHtml(client.DownloadString(url.Url));
                     loaded = true;
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) {}
             }
             while (!loaded);
             var documentNode = html.DocumentNode;

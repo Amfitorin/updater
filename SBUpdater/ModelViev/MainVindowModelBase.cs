@@ -189,7 +189,6 @@
             {
                 DateTime now = DateTime.Now;
                 Tools product = Products.First<Tools>();
-
                 string cmdText = "INSERT INTO `oc_product`\r\n(`product_id`, `model`, `sku`, `upc`, `ean`, `jan`, `isbn`, `mpn`, `location`, `quantity`, `stock_status_id`, \r\n`image`, `manufacturer_id`, `shipping`, `price`, `points`, `tax_class_id`, `date_available`, `weight`, `weight_class_id`,\r\n`length`, `width`, `height`, `length_class_id`, `subtract`, `minimum`, `sort_order`, `status`, `date_added`, `date_modified`, \r\n`viewed`)\r\nVALUES (@product_id,@model,@sku,\"\",\"\",\"\",\"\",\"\",\"\",100,6,@image,@manufacturer_id,TRUE,1,0,0,@date,1,1,1,1,1,2,TRUE,1,0,FALSE,@date,@date,1)";
                 MySqlCommand command = new MySqlCommand(cmdText, connection);
                 command.Parameters.Add(new MySqlParameter("@product_id", ++LastProductId));
@@ -240,9 +239,11 @@
                             list.Add(attribute.Id);
                         }
                     }
+                    var filename = Manufactures.First(x=>x.Id == product.Manufacturer_id).Name + ".txt";
+                    File.AppendAllText(filename, product.Model + " " + product.Sku + "\r\n");
                 }
                 catch (MySql.Data.MySqlClient.MySqlException ex)
-                { }
+                { File.AppendAllText("Error.log", ex.ToString()); }
             }
             Products.Clear();
 

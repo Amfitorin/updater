@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace SBUpdater.Manufacturers
 {
@@ -27,6 +28,8 @@ namespace SBUpdater.Manufacturers
             var documentNode = html.DocumentNode;
             var address = _zubrLink + documentNode.SelectSingleNode("//a[@data-id='main-image']").Attributes["href"].Value;
             var fileName = (@"Zubr\" + url.ProductName + ".png").Replace("\"", "").Replace("/", "");
+            if (!Directory.Exists("Zubr"))
+                Directory.CreateDirectory("Zubr");
             client.DownloadFile(address, fileName);
             var flag = html.GetElementbyId("specifications").ChildNodes.FirstOrDefault(x => x.Name == "table") == null;
             var flag2 = html.GetElementbyId("specifications").ChildNodes.FirstOrDefault(x => x.Name == "p") == null ? true : html.GetElementbyId("specifications").ChildNodes.FirstOrDefault(x => x.Name == "p").ChildNodes.FirstOrDefault(x => x.Name == "table") == null;
@@ -237,7 +240,7 @@ namespace SBUpdater.Manufacturers
                 {
                     List<Tools> list = new List<Tools>();
                     OpenFileDialog dialog = new OpenFileDialog();
-                    string queryString = "SELECT sku\r\nFROM oc_product\r\nWHERE manufacturer_id = 21 && price='1.0000'";
+                    string queryString = "SELECT sku\r\nFROM oc_product\r\nWHERE manufacturer_id >= 21 and manufacturer_id <= 23";
                     Connection.Open();
                     List<string> products = new List<string>();
                     MySqlDataReader reader = LoadFromDb(queryString);
@@ -251,17 +254,21 @@ namespace SBUpdater.Manufacturers
                         Microsoft.Office.Interop.Excel.Application application = (Microsoft.Office.Interop.Excel.Application)Activator.CreateInstance(Marshal.GetTypeFromCLSID(new Guid("00024500-0000-0000-C000-000000000046")));
                         Workbook workbook = application.Workbooks.Open(dialog.FileName, 0, false, 5, "", "", false, XlPlatform.xlWindows, "", true, false, 0, true, false, false);
                         Worksheet worksheet = (Worksheet)workbook.Sheets[1];
-                        for (int j = 8427; j < 17144; j++)
+                        for (int j = 2; j < 17973; j++)
                         {
                             var model = ((worksheet.Cells[j, 1] as Range).Text).ToString() as string;
-                            model = model.Contains("_") ? model.Remove(model.LastIndexOf('_')) : model;
-                            if (model == "" || products.FirstOrDefault(x => x == model) == null)
+                            var status = ((worksheet.Cells[j, 13] as Range).Text).ToString() as string;
+                            if (products.FirstOrDefault(x => x == model) == null || status=="Нет")
+                            {
+                                if (status != "Нет")
+                                    File.AppendAllText("zubr.price.txt",model+" "+ ((worksheet.Cells[j, 9] as Range).Text).ToString() as string  +"\r\n");
                                 continue;
+                            }
                             var rec = ((dynamic)(worksheet.Cells[j, 12] as Range).Text).ToString();
                             var priceString = ((dynamic)(worksheet.Cells[j, 4] as Range).Text).ToString();
                             decimal price;
                             if (rec == "0")
-                                price = (decimal)Convert.ToInt32(int.Parse((priceString).Remove((priceString).IndexOf(',')).Replace(" ", "")) * 1.23);
+                                price = (decimal)Convert.ToInt32(int.Parse((priceString).Remove((priceString).IndexOf(',')).Replace(" ", "")) * 1.27);
                             else
                                 price = Convert.ToDecimal(rec);
                             var item = new Tools
@@ -274,7 +281,7 @@ namespace SBUpdater.Manufacturers
                         application.Quit();
                         foreach (Tools tools2 in list)
                         {
-                            string cmdText = "UPDATE `oc_product` SET\r\nprice = @price WHERE sku = @sku and manufacturer_id = 21";
+                            string cmdText = "UPDATE `oc_product` SET\r\nprice = @price, status=1 WHERE sku = @sku and  manufacturer_id >= 21 and manufacturer_id <= 23";
                             MySqlCommand command = new MySqlCommand(cmdText, Connection);
                             command.Parameters.Add(new MySqlParameter("@price", tools2.Price));
                             command.Parameters.Add(new MySqlParameter("@sku", tools2.Model));

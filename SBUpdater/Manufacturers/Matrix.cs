@@ -159,14 +159,16 @@ namespace SBUpdater.Manufacturers
                         Microsoft.Office.Interop.Excel.Application application = (Microsoft.Office.Interop.Excel.Application)Activator.CreateInstance(Marshal.GetTypeFromCLSID(new Guid("00024500-0000-0000-C000-000000000046")));
                         Workbook workbook = application.Workbooks.Open(dialog.FileName, 0, false, 5, "", "", false, XlPlatform.xlWindows, "", true, false, 0, true, false, false);
                         Worksheet worksheet = (Worksheet)workbook.Sheets[1];
-                        for (int j = 5; j < 7572; j++)
+                        for (int j = 5; j < 7233; j++)
                         {
 
                             if (((worksheet.Cells[j, 2] as Range).Text).ToString() == "" || ((worksheet.Cells[j, 2] as Range).Text).ToString() == "Наименование")
                                 continue;
                             var model = ((worksheet.Cells[j, 1] as Range).Text).ToString();
-                            var priceString = ((dynamic)(worksheet.Cells[j, 7] as Range).Text).ToString();
-                            var price = Convert.ToInt32(int.Parse((priceString).Remove((priceString).IndexOf(',')).Replace(" ", "")) * 1.25);
+                            if (!products.Contains(model))
+                                File.AppendAllText("matrix.price.txt", model + " \r\n");
+                            var priceString = ((dynamic)(worksheet.Cells[j, 8] as Range).Text).ToString();
+                            var price = Convert.ToInt32(int.Parse((priceString).Remove((priceString).IndexOf(',')).Replace(" ", "")) * 1.27);
                             var item = new Tools
                             {
                                 Price = (decimal)price,
