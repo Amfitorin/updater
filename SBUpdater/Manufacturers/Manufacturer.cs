@@ -5,21 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Net;
+using System.IO;
 
 namespace SBUpdater.Manufacturers
 {
     public class Manufacturer : ModelViev.MainWindowModelBase
     {
-
-        
-
         public string readFromHtml(string attr)
         {
             return endEncoding.GetString(startEncoding.GetBytes(attr));
         }
-
-        
-
         public void WriteOnFile()
         {
             string contents = "";
@@ -30,7 +25,6 @@ namespace SBUpdater.Manufacturers
             }
             System.IO.File.WriteAllText("attributes.txt", contents);
         }
-
         public void WriteCategoryes()
         {
             string contents = "";
@@ -41,10 +35,11 @@ namespace SBUpdater.Manufacturers
             }
             System.IO.File.WriteAllText("categoryes.txt", contents);
         }
-
-
-       
-
-       
+        protected void LoadImage(string address,string fileName)
+        {
+            var client = new WebClient();
+            Directory.CreateDirectory(fileName);
+            client.DownloadFile(address, fileName);
+        }
     }
 }

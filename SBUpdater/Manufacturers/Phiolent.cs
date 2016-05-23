@@ -31,10 +31,10 @@ namespace SBUpdater.Manufacturers
                 var address = url.CategoryName;
                 var sku = documentNode.SelectSingleNode("//div[@class='description']").InnerText.Split('\n')[1].Trim().Replace("Модель:","").Trim();
                 var fileName = (@"Phiolent\" + sku + ".jpg").Replace("\"", "").Replace("/", "").Replace("<", "").Replace(">", "").Replace(":", "");
-                client.DownloadFile(address, fileName);
+                LoadImage(address, fileName);
                 var descr = "";
-                if (documentNode.SelectSingleNode("//div[@class='opacity05-article']").SelectSingleNode(".//div[@class='text']") != null)
-                    descr = documentNode.SelectSingleNode("//div[@class='opacity05-article']").SelectSingleNode(".//div[@class='text']").InnerText.Replace("\t", "").Trim(new char[] { '\n', ' ' });
+                if (html.GetElementbyId("tab-description").InnerText != null)
+                    descr = html.GetElementbyId("tab-description").InnerText;
                 var catName = documentNode.SelectSingleNode("//div[@class='navigation-route']").SelectNodes(".//a").Last().InnerText;
                 var name = documentNode.SelectSingleNode("//div[@class='opacity05-article']").SelectSingleNode(".//h1").InnerText;
                 name = name.Remove(name.IndexOf("//"));

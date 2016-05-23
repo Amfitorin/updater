@@ -35,7 +35,6 @@ D:\Work\updater\SBUpdater\bin\Debug\HtmlAgilityPack.pdb
 D:\Work\updater\SBUpdater\bin\Debug\HtmlAgilityPack.xml
 D:\Work\updater\SBUpdater\bin\Debug\Microsoft.Expression.Interactions.xml
 D:\Work\updater\SBUpdater\bin\Debug\System.Windows.Interactivity.xml
-D:\Work\updater\SBUpdater\obj\Debug\SBUpdater.csproj.ResolveComReference.cache
 D:\Work\updater\SBUpdater\obj\Debug\Viev\ConfigureAttr.baml
 D:\Work\updater\SBUpdater\obj\Debug\Viev\EditCategory.baml
 D:\Work\updater\SBUpdater\obj\Debug\Viev\MainWindow.baml
