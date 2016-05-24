@@ -40,20 +40,22 @@ namespace SBUpdater.Manufacturers
                 ConfirmCategory(catName);
                 WriteCategoryes();
 
-                var attribute = new List<Models.Attribute>();
+                var attribute = new List<Attr>();
                 var table = documentNode.SelectNodes("//table[@class='attribute']/tbody/tr");
                 foreach(var item in table)
                 {
                     var attr = item.SelectNodes(".//td");
-                    attribute.Add(new Models.Attribute
+                    attribute.Add(new Attr
                     {
-                        Name = attr[0].InnerText,
+                        AttrName = attr[0].InnerText,
                         Value = attr[1].InnerText
                     });
                 }
+                var attributes = AttributesReturn(attribute);
+               
                 Tools tools = new Tools
                 {
-                    Attributes = attribute,
+                    Attributes = attributes,
                     CategoryName = catName
                 };
                 var description = new ProductDescription
@@ -83,7 +85,6 @@ namespace SBUpdater.Manufacturers
             }
 
         }
-
         private void ParsePhiolentLinks(URLs url)
         {
             var html = new HtmlDocument();
@@ -124,13 +125,14 @@ namespace SBUpdater.Manufacturers
                         });
                     }
         }
-
         public ICommand UpdatePhiolentLinks
         {
             get
             {
                 return new Command(() =>
                 {
+                    ReadOfFile();
+                    ReadCategoryes();
                     var html = new HtmlDocument();
                     var client = new WebClient();
                     html.LoadHtml(readFromHtml( client.DownloadString(_link)));
@@ -166,7 +168,6 @@ namespace SBUpdater.Manufacturers
                 }, null);
             }
         }
-
         public ICommand UpdatePhiolentPrice
         {
             get
