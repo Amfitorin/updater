@@ -38,7 +38,9 @@ namespace SBUpdater.Manufacturers
         protected void LoadImage(string address,string fileName)
         {
             var client = new WebClient();
-            Directory.CreateDirectory(fileName);
+            var directory = Path.GetDirectoryName(fileName);
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
             client.DownloadFile(address, fileName);
         }
     }

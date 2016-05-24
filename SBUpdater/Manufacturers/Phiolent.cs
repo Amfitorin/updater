@@ -28,20 +28,29 @@ namespace SBUpdater.Manufacturers
             {
                 html.LoadHtml(readFromHtml(client.DownloadString(url.Url)));
                 var documentNode = html.DocumentNode;
-                var address = url.CategoryName;
+                var address = html.GetElementbyId("image").Attributes["src"].Value;
                 var sku = documentNode.SelectSingleNode("//div[@class='description']").InnerText.Split('\n')[1].Trim().Replace("Модель:","").Trim();
                 var fileName = (@"Phiolent\" + sku + ".jpg").Replace("\"", "").Replace("/", "").Replace("<", "").Replace(">", "").Replace(":", "");
                 LoadImage(address, fileName);
                 var descr = "";
                 if (html.GetElementbyId("tab-description").InnerText != null)
                     descr = html.GetElementbyId("tab-description").InnerText;
-                var catName = documentNode.SelectSingleNode("//div[@class='navigation-route']").SelectNodes(".//a").Last().InnerText;
-                var name = documentNode.SelectSingleNode("//div[@class='opacity05-article']").SelectSingleNode(".//h1").InnerText;
-                name = name.Remove(name.IndexOf("//"));
+                var catName = url.CategoryName;
+                var name = documentNode.SelectSingleNode("//h1").InnerText;
                 ConfirmCategory(catName);
                 WriteCategoryes();
 
                 var attribute = new List<Models.Attribute>();
+                var table = documentNode.SelectNodes("//table[@class='attribute']/tbody/tr");
+                foreach(var item in table)
+                {
+                    var attr = item.SelectNodes(".//td");
+                    attribute.Add(new Models.Attribute
+                    {
+                        Name = attr[0].InnerText,
+                        Value = attr[1].InnerText
+                    });
+                }
                 Tools tools = new Tools
                 {
                     Attributes = attribute,
@@ -50,14 +59,14 @@ namespace SBUpdater.Manufacturers
                 var description = new ProductDescription
                 {
                     Description = descr,
-                    Meta_Description = metaDescription.Replace("{0}", "Phiolent " + name + " " + url.ProductName),
-                    Meta_Keyword = metaKeywords.Replace("{0}", "Phiolent " + name + " " + url.ProductName)
+                    Meta_Description = metaDescription.Replace("{0}", name),
+                    Meta_Keyword = metaKeywords.Replace("{0}", name)
                 };
                 tools.Description = description;
                 tools.Height = 1M;
                 tools.Image = "data/" + fileName.Replace(@"\", "/");
                 tools.Length = 1M;
-                tools.Manufacturer_id = 34;
+                tools.Manufacturer_id = 77;
                 tools.Model = sku;
                 tools.Name = name;
                 tools.Price = 1M;
