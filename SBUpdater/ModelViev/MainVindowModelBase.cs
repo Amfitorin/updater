@@ -50,37 +50,39 @@
         private SBUpdater.Viev.AddAttributeGroup AddAttributeGroupWindow;
         private SBUpdater.Viev.AddAttribute AddAttributeWindow;
         private SBUpdater.Viev.AddCategory AddCategoryWindow;
-        
+
         public Dictionary<string, int> CategoryConst = new Dictionary<string, int>();
+
+
         public List<URLs> CategoryUrls = new List<URLs>();
         public SBUpdater.Viev.ConfigureAttr ConfigureAttrVindow;
         private SBUpdater.Viev.ConfirmCategory ConfirmCategoryWindow;
         public static MySqlConnection Connection;
         private static readonly string description = "Купить {0} по лучшим ценам.";
-        
+
         private bool isSaved = false;
         public static int LastAttrGroupId = 0;
         public static int LastAttributeId = 0;
         public static int LastCategoryId = 0;
         public static int LastProductId = 0;
         public static List<Manufacturer> Manufactures;
-        
+
         public List<Tools> Products = new List<Tools>();
         public List<URLs> ProductUrls = new List<URLs>();
         private SBUpdater.Viev.SettingWindow SettingWindow;
-        
+
         #endregion
 
         #region Categories
-        private void ReadCategoryes()
+        public void ReadCategoryes()
         {
             string[] strArray = System.IO.File.ReadAllText("categoryes.txt").Split(new char[] { '#' });
-            foreach (string str2 in strArray)
+            foreach (string catstr in strArray)
             {
-                if (!(str2 == ""))
+                var category = catstr.Split(new char[] { '|' });
+                if (!(catstr == "") && ! CategoryConst.ContainsKey(category[0]))
                 {
-                    string[] strArray2 = str2.Split(new char[] { '|' });
-                    CategoryConst.Add(strArray2[0], int.Parse(strArray2[1]));
+                    CategoryConst.Add(category[0], int.Parse(category[1]));
                 }
             }
         }
@@ -112,7 +114,7 @@
             }
         }
 
-        
+
 
         public ICommand AddCategory
         {
@@ -170,7 +172,7 @@
             DB.DatabaseServer = Settings.Default.DatabaseServer ?? "";
         }
 
-       
+
 
         public void ConfirmCategory(string cat)
         {
@@ -239,7 +241,7 @@
                             list.Add(attribute.Id);
                         }
                     }
-                    var filename = Manufactures.First(x=>x.Id == product.Manufacturer_id).Name + ".txt";
+                    var filename = Manufactures.First(x => x.Id == product.Manufacturer_id).Name + ".txt";
                     File.AppendAllText(filename, product.Model + " " + product.Sku + "\r\n");
                 }
                 catch (MySql.Data.MySqlClient.MySqlException ex)
@@ -854,8 +856,6 @@
                     LastAttrGroupId = AttrGroups.Max<AttributeGroup>((Func<AttributeGroup, int>)(x => x.Id));
                     AttrGroupNames = (from x in AttrGroups select x.Name).ToList<string>();
                     _attrGroupsDictionary = AttrGroups.ToDictionary<AttributeGroup, string, int>(x => x.Name, x => x.Id);
-                    ReadOfFile();
-                    ReadCategoryes();
                     string cmdText = "SELECT MAX(product_id) FROM oc_product";
                     MySqlCommand command = new MySqlCommand(cmdText, Connection);
                     Connection.Open();
@@ -868,7 +868,7 @@
             }
         }
 
-        
+
         #endregion
 
         #region Дополнительные функции
@@ -900,10 +900,10 @@
             string[] strArray = System.IO.File.ReadAllText("attributes.txt").Split(new char[] { '`' });
             foreach (string str2 in strArray)
             {
-                if (!(str2 == ""))
+                var attribute = str2.Split(new char[] { '|' });
+                if (!(str2 == "") && !AttributesConst.ContainsKey(attribute[0]))
                 {
-                    string[] strArray2 = str2.Split(new char[] { '|' });
-                    AttributesConst.Add(strArray2[0], new attrCat(int.Parse(strArray2[1]), int.Parse(strArray2[2])));
+                    AttributesConst.Add(attribute[0], new attrCat(int.Parse(attribute[1]), int.Parse(attribute[2])));
                 }
             }
         }
