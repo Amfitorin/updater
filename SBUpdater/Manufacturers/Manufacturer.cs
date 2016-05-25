@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Net;
 using System.IO;
+using SBUpdater.Models;
+using System.Windows.Input;
 
 namespace SBUpdater.Manufacturers
 {
@@ -39,7 +41,6 @@ namespace SBUpdater.Manufacturers
             }
             File.WriteAllText("categoryes.txt", contents);
         }
-
         protected List<Models.Attribute> AttributesReturn(List<Attr> attributes)
         {
             ConfigureAttr(attributes);
@@ -55,8 +56,6 @@ namespace SBUpdater.Manufacturers
                 });
             return result;
         }
-
-
         protected void LoadImage(string address,string fileName)
         {
             var client = new WebClient();
@@ -65,5 +64,7 @@ namespace SBUpdater.Manufacturers
                 Directory.CreateDirectory(directory);
             client.DownloadFile(address, fileName);
         }
+
+       
     }
 }

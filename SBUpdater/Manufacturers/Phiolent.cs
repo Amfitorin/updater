@@ -17,10 +17,10 @@ using System.Windows;
 
 namespace SBUpdater.Manufacturers
 {
-    public class Phiolent : Manufacturer
+    public class Phiolent : Manufacturer, Parser
     {
         private readonly string _link = "http://shop.phiolent.com/";
-        private void ParsePhiolent(URLs url)
+        public void ParseProduct(URLs url)
         {
             var html = new HtmlDocument();
             var client = new WebClient();
@@ -29,7 +29,7 @@ namespace SBUpdater.Manufacturers
                 html.LoadHtml(readFromHtml(client.DownloadString(url.Url)));
                 var documentNode = html.DocumentNode;
                 var address = html.GetElementbyId("image").Attributes["src"].Value;
-                var sku = documentNode.SelectSingleNode("//div[@class='description']").InnerText.Split('\n')[1].Trim().Replace("Модель:","").Trim();
+                var sku = documentNode.SelectSingleNode("//div[@class='description']").InnerText.Split('\n')[1].Trim().Replace("Модель:", "").Trim();
                 var fileName = (@"Phiolent\" + sku + ".jpg").Replace("\"", "").Replace("/", "").Replace("<", "").Replace(">", "").Replace(":", "");
                 LoadImage(address, fileName);
                 var descr = "";
@@ -42,7 +42,7 @@ namespace SBUpdater.Manufacturers
 
                 var attribute = new List<Attr>();
                 var table = documentNode.SelectNodes("//table[@class='attribute']/tbody/tr");
-                foreach(var item in table)
+                foreach (var item in table)
                 {
                     var attr = item.SelectNodes(".//td");
                     attribute.Add(new Attr
@@ -52,7 +52,7 @@ namespace SBUpdater.Manufacturers
                     });
                 }
                 var attributes = AttributesReturn(attribute);
-               
+
                 Tools tools = new Tools
                 {
                     Attributes = attributes,
@@ -83,18 +83,18 @@ namespace SBUpdater.Manufacturers
             {
                 File.AppendAllText("error.txt", url.Url + " " + url.ProductName + " " + ex.Message + "\r\n");
             }
-
         }
-        private void ParsePhiolentLinks(URLs url)
+
+        public void ParseProductLinks(URLs url)
         {
             var html = new HtmlDocument();
             var client = new WebClient();
-            html.LoadHtml(readFromHtml( client.DownloadString(url.Url)));
+            html.LoadHtml(readFromHtml(client.DownloadString(url.Url)));
             var urls = new List<URLs>();
             urls.Add(url);
             if (html.DocumentNode.SelectSingleNode("//div[@class='pagination']") == null)
                 return;
-            if (html.DocumentNode.SelectSingleNode("//div[@class='pagination']").ChildNodes.Any(x=>x.Name == "a"))
+            if (html.DocumentNode.SelectSingleNode("//div[@class='pagination']").ChildNodes.Any(x => x.Name == "a"))
             {
                 var pages = html.DocumentNode.SelectSingleNode("//div[@class='pagination']").SelectNodes(".//a").ToList();
                 pages.RemoveRange(pages.Count - 2, 2);
@@ -102,30 +102,31 @@ namespace SBUpdater.Manufacturers
                     urls.Add(new URLs
                     {
                         CategoryName = url.CategoryName,
-                        Url = item.GetAttributeValue("href","")
+                        Url = item.GetAttributeValue("href", "")
                     });
 
             }
             var products = html.DocumentNode.SelectSingleNode("//div[@class='product-list']").SelectNodes("./div").ToList();
             if (urls.Count > 1)
-                for (int i = 1; i < urls.Count;i++ )
+                for (int i = 1; i < urls.Count; i++)
                 {
                     html.LoadHtml(readFromHtml(client.DownloadString(urls[i].Url)));
                     products.AddRange(html.DocumentNode.SelectSingleNode("//div[@class='product-list']").SelectNodes("./div").ToList());
                 }
-                    foreach (var product in products)
-                    {
-                        var link = product.SelectSingleNode(".//div[@class='name']").SelectSingleNode(".//a");
-                        ProductUrls.Add(new URLs
-                        {
-                            CategoryName = url.CategoryName,
-                            ProductName = link.InnerText,
-                            Url = link.Attributes["href"].Value,
+            foreach (var product in products)
+            {
+                var link = product.SelectSingleNode(".//div[@class='name']").SelectSingleNode(".//a");
+                ProductUrls.Add(new URLs
+                {
+                    CategoryName = url.CategoryName,
+                    ProductName = link.InnerText,
+                    Url = link.Attributes["href"].Value,
 
-                        });
-                    }
+                });
+            }
         }
-        public ICommand UpdatePhiolentLinks
+
+        public ICommand UpdateCategoryLinks
         {
             get
             {
@@ -135,17 +136,17 @@ namespace SBUpdater.Manufacturers
                     ReadCategoryes();
                     var html = new HtmlDocument();
                     var client = new WebClient();
-                    html.LoadHtml(readFromHtml( client.DownloadString(_link)));
+                    html.LoadHtml(readFromHtml(client.DownloadString(_link)));
                     var links = html.GetElementbyId("menu").SelectNodes(".//li");
                     foreach (var link in links)
                     {
                         if (link.ChildNodes.Count > 3)
                             continue;
                         var a = link.SelectSingleNode(".//a");
-                        ParsePhiolentLinks(new URLs
+                        ParseProductLinks(new URLs
                         {
-                            CategoryName = a.InnerText.Contains('(') ? a.InnerText.Remove(a.InnerText.IndexOf('(') - 1):a.InnerText,
-                            Url = a.GetAttributeValue("href","")
+                            CategoryName = a.InnerText.Contains('(') ? a.InnerText.Remove(a.InnerText.IndexOf('(') - 1) : a.InnerText,
+                            Url = a.GetAttributeValue("href", "")
                         });
                     }
 
@@ -161,14 +162,15 @@ namespace SBUpdater.Manufacturers
                     ProductUrls = ProductUrls.Where(x => !products.Contains(x.ProductName)).ToList();
                     do
                     {
-                        ParsePhiolent(ProductUrls.First());
+                        ParseProduct(ProductUrls.First());
                         ProductUrls.RemoveAt(0);
                     }
                     while (ProductUrls.Count > 0);
                 }, null);
             }
         }
-        public ICommand UpdatePhiolentPrice
+
+        public ICommand UpdatePrice
         {
             get
             {
@@ -176,7 +178,7 @@ namespace SBUpdater.Manufacturers
                 {
                     List<Tools> list = new List<Tools>();
                     OpenFileDialog dialog = new OpenFileDialog();
-                    string queryString = "SELECT sku\r\nFROM oc_product\r\nWHERE manufacturer_id > 25 and manufacturer_id<34";
+                    string queryString = "SELECT sku\r\nFROM oc_product\r\nWHERE manufacturer_id = 77";
                     Connection.Open();
                     List<string> products = new List<string>();
                     MySqlDataReader reader = LoadFromDb(queryString);
@@ -190,13 +192,13 @@ namespace SBUpdater.Manufacturers
                         Microsoft.Office.Interop.Excel.Application application = (Microsoft.Office.Interop.Excel.Application)Activator.CreateInstance(Marshal.GetTypeFromCLSID(new Guid("00024500-0000-0000-C000-000000000046")));
                         Workbook workbook = application.Workbooks.Open(dialog.FileName, 0, false, 5, "", "", false, XlPlatform.xlWindows, "", true, false, 0, true, false, false);
                         Worksheet worksheet = (Worksheet)workbook.Sheets[1];
-                        for (int j = 9; j < 1916; j++)
+                        for (int j = 15; j <= 72; j++)
                         {
-                            var model = ((worksheet.Cells[j, 1] as Range).Text).ToString();
+                            var model = ((worksheet.Cells[j, 3] as Range).Text).ToString();
                             if (model == "")
                                 continue;
-                            var priceString = ((dynamic)(worksheet.Cells[j, 14] as Range).Text).ToString();
-                            var price = Convert.ToInt32(int.Parse((priceString).Remove((priceString).IndexOf(',')).Replace(" ", "")) * 0.95);
+                            var priceString = ((dynamic)(worksheet.Cells[j, 8] as Range).Text).ToString();
+                            var price = int.Parse(priceString).Remove((priceString).IndexOf(',')).Replace(" ", "");
                             var item = new Tools
                             {
                                 Price = (decimal)price,
@@ -209,7 +211,7 @@ namespace SBUpdater.Manufacturers
                         {
                             if (products.Contains(tools2.Model))
                             {
-                                string cmdText = "UPDATE `oc_product` SET\r\nprice = @price, status=TRUE WHERE sku = @model and manufacturer_id > 25 and manufacturer_id<34";
+                                string cmdText = "UPDATE `oc_product` SET\r\nprice = @price, status=TRUE WHERE sku = @model and manufacturer_id = 77";
                                 MySqlCommand command = new MySqlCommand(cmdText, Connection);
                                 command.Parameters.Add(new MySqlParameter("@price", tools2.Price));
                                 command.Parameters.Add(new MySqlParameter("@model", tools2.Model));

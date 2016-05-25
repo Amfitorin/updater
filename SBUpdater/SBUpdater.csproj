@@ -99,8 +99,10 @@
     <Compile Include="Manufacturers\Kraftool.cs" />
     <Compile Include="Manufacturers\Manufacturer.cs" />
     <Compile Include="Manufacturers\Matrix.cs" />
+    <Compile Include="Manufacturers\Olfa.cs" />
     <Compile Include="Manufacturers\Palisad.cs" />
     <Compile Include="Manufacturers\PalisadCamping.cs" />
+    <Compile Include="Manufacturers\Parser.cs" />
     <Compile Include="Manufacturers\Phiolent.cs" />
     <Compile Include="Manufacturers\Rapid.cs" />
     <Compile Include="Manufacturers\Russia.cs" />

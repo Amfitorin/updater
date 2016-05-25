@@ -36,6 +36,7 @@
         <manuf:Sturm x:Key="Sturm"/>
         <manuf:Zubr x:Key="Zubr"/>
         <manuf:Phiolent x:Key="Phiolent"/>
+		<manuf:Olfa x:Key="Olfa"/>
     </Window.Resources>
     <Grid DataContext="{StaticResource Model}">
         <Grid.RowDefinitions>
@@ -58,7 +59,8 @@
             <Button Content="Получить прайс Kraftool" DataContext="{StaticResource Kraftool}"  Command="{Binding UpdateKraftoolPrice}"/>
             <Button Content="Получить прайс Sturm" DataContext="{StaticResource Sturm}"  Command="{Binding UpdateSturmPrice}"/>
             <Button Content="Получить прайс Matrix" DataContext="{StaticResource Matrix}"  Command="{Binding UpdateMatrixPrice}"/>
-            <Button Content="Получить прайс Фиолент" DataContext="{StaticResource Phiolent}"  Command="{Binding UpdatePhiolentPrice}"/>
+            <Button Content="Получить прайс Фиолент" DataContext="{StaticResource Phiolent}"  Command="{Binding UpdatePrice}"/>
+			<Button Content="Получить прайс Olfa" DataContext="{StaticResource Olfa}"  Command="{Binding UpdatePrice}"/>
         </ComboBox>
         <StackPanel Orientation="Horizontal" Grid.Row="1">
             <Button Content="Обновить из базы" Margin="5" Command="{Binding UpdateBase}"/>
@@ -92,7 +94,8 @@
                 <Button Content="Получить Stern" DataContext="{StaticResource Stern}"  Width="180" Command="{Binding UpdateSternLinks}"/>
                 <Button Content="Получить Shurup" DataContext="{StaticResource Shurup}"  Width="180" Command="{Binding UpdateShurupLinks}"/>
                 <Button Content="Получить Russia" DataContext="{StaticResource Russia}"  Width="180" Command="{Binding UpdateRussiaLinks}"/>
-                <Button Content="Получить Фиолент" DataContext="{StaticResource Phiolent}"  Command="{Binding UpdatePhiolentLinks}"/>
+                <Button Content="Получить Фиолент" DataContext="{StaticResource Phiolent}" Width="180"  Command="{Binding UpdateCategoryLinks}"/>
+				<Button Content="Получить Olfa" DataContext="{StaticResource Olfa}" Width="180"  Command="{Binding UpdateCategoryLinks}"/>
 
             </ComboBox>
 

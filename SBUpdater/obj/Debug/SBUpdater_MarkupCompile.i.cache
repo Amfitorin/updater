@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\Work\updater\SBUpdater\obj\Debug\
+D:\site\updater\updater\SBUpdater\obj\Debug\
 SBUpdater
 none
 false
 DEBUG;TRACE
-D:\Work\updater\SBUpdater\App.xaml
+D:\site\updater\updater\SBUpdater\App.xaml
 91225021658
 
-63-1817708231
-24573908165
+65644655403
+24-1904197996
 MainWindow.xaml;Viev\AddAttribute.xaml;Viev\AddAttributeGroup.xaml;Viev\AddCategory.xaml;Viev\ConfigureAttr.xaml;Viev\ConfirmCategory.xaml;Viev\EditCategory.xaml;Viev\MainWindow.xaml;Viev\SettingWindow.xaml;
 
-False
+True
 
