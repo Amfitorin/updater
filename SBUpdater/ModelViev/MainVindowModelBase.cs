@@ -200,7 +200,7 @@
                 command.Parameters.Add(new MySqlParameter("@price", product.Price));
                 command.Parameters.Add(new MySqlParameter("@manufacturer_id", product.Manufacturer_id));
                 command.Parameters.Add(new MySqlParameter("@date", now));
-                string str2 = "INSERT INTO `oc_product_description`\r\n(`product_id`, `language_id`, `name`, `description`, `meta_description`, `meta_keyword`, `tag`) \r\nVALUES (@product_id,1,@name,@description,'','',\"\")";
+                string str2 = "INSERT INTO `oc_product_description`\r\n(`product_id`, `language_id`, `name`, `description`, `meta_description`, `meta_keyword`, `tag`,`meta_title`) \r\nVALUES (@product_id,1,@name,@description,'','',\"\",@name)";
                 MySqlCommand command2 = new MySqlCommand(str2, connection);
                 command2.Parameters.Add(new MySqlParameter("@product_id", LastProductId));
                 var name = "";

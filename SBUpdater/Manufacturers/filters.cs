@@ -10,6 +10,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SBUpdater.Manufacturers
 {
@@ -17,6 +18,7 @@ namespace SBUpdater.Manufacturers
     {
         private readonly string _link = "https://www.filter.ru/";
         List<URLs> Category = new List<URLs>();
+        List<URLs> Cats = new List<URLs>();
         List<URLs> Product = new List<URLs>();
         public void ParseProduct(URLs url)
         {
@@ -51,10 +53,14 @@ namespace SBUpdater.Manufacturers
                     continue;
                 client.DownloadFile(_link + link, fileName);
             }
-            descr = Regex.Replace(descr, "(src=\")(.*?)/(.*?\")", "$1/image/Filter/$3");
+            if (descr.IndexOf("Дополнительные материалы") != -1)
+                descr = descr.Remove(descr.IndexOf("Дополнительные материалы"));
             descr = Regex.Replace(descr, "<a.*?>", "");
             descr = Regex.Replace(descr, "</a.*?>", "");
-            descr = Regex.Replace(descr, "/image/Filter//youtube", "https://youtube");
+            descr = Regex.Replace(descr, "(\"img/)(.*?\")", "\"/image/Filter/$2");
+            descr = Regex.Replace(descr, "(\"/)([^/]*?\")", "\"/image/Filter/$2");
+            descr = Regex.Replace(descr, "(src=\")([^/]*?\")", "$1/image/Filter/$2");
+            ConfirmCategory(url.CategoryName);
             Tools tools = new Tools
             {
                 CategoryName = url.CategoryName
@@ -138,29 +144,47 @@ namespace SBUpdater.Manufacturers
             {
                 return new Command(() =>
                 {
-                    var html = new HtmlDocument();
-                    var client = new WebClient();
-                    html.LoadHtml(client.DownloadString(_link));
-                    var links = html.DocumentNode.SelectNodes("//div[@class='left_column_module']/h3/a").Select(x =>
+                    //var html = new HtmlDocument();
+                    //var client = new WebClient();
+                    //html.LoadHtml(client.DownloadString(_link));
+                    //foreach (var item in links)
+                    //    ParseCategory(item);
+                    //foreach (var category in Category)
+                    //ParseProductLinks(new URLs
+                    //{
+                    //    CategoryName = "Аксессуары",
+                    //    Url = "https://www.filter.ru/index.php?act=prodlist&id=135"
+                    //});
+                    //foreach (var product in Product)
+                    //    ParseProduct(product);
+                    //
+                    var commandString = "SELECT description, product_id from `oc_product_description` WHERE product_id > 78";
+                    var dict = new Dictionary<int, string>();
+                    using (var connection = Connection)
                     {
-                        return new URLs
+                        connection.Open();
+                        var reader = LoadFromDb(commandString);
+
+                        while (reader.Read())
                         {
-                            CategoryName = x.InnerText,
-                            Url = (_link + x.GetAttributeValue("href", "")).Replace("amp;", "")
-                        };
-                    });
-                    foreach (var item in links)
-                        ParseCategory(item);
-                    foreach (var category in Category)
-                        ParseProductLinks(category);
-                    Category.AddRange(links);
-                    foreach (var item in Category)
-                    {
-                        ConfirmCategory(item.CategoryName);
+                            if (reader.GetString(0).Contains("Скачать"))
+                                dict.Add(reader.GetInt32(1), reader.GetString(0));
+                        }
+                        connection.Close();
+                        foreach (var item in dict)
+                        {
+                            var descr = item.Value;
+                            descr = descr.Remove(descr.IndexOf("Скачать"));
+                            commandString = "UPDATE `oc_product_description` SET description = @descr WHERE product_id = @id";
+                            var command = new MySqlCommand(commandString, connection);
+                            command.Parameters.Add("@descr", descr);
+                            command.Parameters.Add("@id", item.Key);
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                            connection.Close();
+                        }
                     }
-                    foreach (var product in Product)
-                        ParseProduct(product);
-                
+                    MessageBox.Show("Добавление продуктов завершено");
                 });
             }
         }
