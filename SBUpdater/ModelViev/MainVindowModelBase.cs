@@ -191,22 +191,23 @@
             {
                 DateTime now = DateTime.Now;
                 Tools product = Products.First<Tools>();
-                string cmdText = "INSERT INTO `oc_product`\r\n(`product_id`, `model`, `sku`, `upc`, `ean`, `jan`, `isbn`, `mpn`, `location`, `quantity`, `stock_status_id`, \r\n`image`, `manufacturer_id`, `shipping`, `price`, `points`, `tax_class_id`, `date_available`, `weight`, `weight_class_id`,\r\n`length`, `width`, `height`, `length_class_id`, `subtract`, `minimum`, `sort_order`, `status`, `date_added`, `date_modified`, \r\n`viewed`)\r\nVALUES (@product_id,@model,@sku,\"\",\"\",\"\",\"\",\"\",\"\",100,6,@image,@manufacturer_id,TRUE,1,0,0,@date,1,1,1,1,1,2,TRUE,1,0,FALSE,@date,@date,1)";
+                string cmdText = "INSERT INTO `oc_product`\r\n(`product_id`, `model`, `sku`, `upc`, `ean`, `jan`, `isbn`, `mpn`, `location`, `quantity`, `stock_status_id`, \r\n`image`, `manufacturer_id`, `shipping`, `price`, `points`, `tax_class_id`, `date_available`, `weight`, `weight_class_id`,\r\n`length`, `width`, `height`, `length_class_id`, `subtract`, `minimum`, `sort_order`, `status`, `date_added`, `date_modified`, \r\n`viewed`)\r\nVALUES (@product_id,@model,@sku,\"\",\"\",\"\",\"\",\"\",\"\",1000,7,@image,@manufacturer_id,TRUE,@price,0,0,@date,1,1,1,1,1,2,TRUE,1,0,True,@date,@date,1)";
                 MySqlCommand command = new MySqlCommand(cmdText, connection);
                 command.Parameters.Add(new MySqlParameter("@product_id", ++LastProductId));
                 command.Parameters.Add(new MySqlParameter("@model", product.Model));
                 command.Parameters.Add(new MySqlParameter("@sku", product.Sku));
                 command.Parameters.Add(new MySqlParameter("@image", product.Image));
+                command.Parameters.Add(new MySqlParameter("@price", product.Price));
                 command.Parameters.Add(new MySqlParameter("@manufacturer_id", product.Manufacturer_id));
                 command.Parameters.Add(new MySqlParameter("@date", now));
-                string str2 = "INSERT INTO `oc_product_description`\r\n(`product_id`, `language_id`, `name`, `description`, `meta_description`, `meta_keyword`, `tag`) \r\nVALUES (@product_id,3,@name,@description,@meta_description,@meta_keyword,\"\")";
+                string str2 = "INSERT INTO `oc_product_description`\r\n(`product_id`, `language_id`, `name`, `description`, `meta_description`, `meta_keyword`, `tag`) \r\nVALUES (@product_id,1,@name,@description,'','',\"\")";
                 MySqlCommand command2 = new MySqlCommand(str2, connection);
                 command2.Parameters.Add(new MySqlParameter("@product_id", LastProductId));
                 var name = "";
                 if (product.Model.Contains(product.Sku))
                     name = "\"" + product.Sku + "\"";
                 else name = product.Model + " \"" + product.Sku + "\"";
-                command2.Parameters.Add(new MySqlParameter("@name", product.Name + " " + Manufactures.First<Manufacturer>(x => (x.Id == product.Manufacturer_id)).Name + " " + name));
+                command2.Parameters.Add(new MySqlParameter("@name", product.Model));
                 command2.Parameters.Add(new MySqlParameter("@description", product.Description.Description));
                 command2.Parameters.Add(new MySqlParameter("@meta_description", product.Description.Meta_Description));
                 command2.Parameters.Add(new MySqlParameter("@meta_keyword", product.Description.Meta_Keyword));
@@ -225,24 +226,24 @@
                     command3.ExecuteNonQuery();
                     command4.ExecuteNonQuery();
                     connection.Close();
-                    List<int> list = new List<int>();
-                    foreach (SBUpdater.Models.Attribute attribute in product.Attributes)
-                    {
-                        if (!list.Contains(attribute.Id))
-                        {
-                            string str5 = "INSERT INTO `oc_product_attribute`(`product_id`, `attribute_id`, `language_id`, `text`) \r\nVALUES (@product_id,@attribute_id,3,@text)";
-                            MySqlCommand command5 = new MySqlCommand(str5, connection);
-                            command5.Parameters.Add(new MySqlParameter("@product_id", LastProductId));
-                            command5.Parameters.Add(new MySqlParameter("@attribute_id", attribute.Id));
-                            command5.Parameters.Add(new MySqlParameter("@text", attribute.Value));
-                            connection.Open();
-                            command5.ExecuteNonQuery();
-                            connection.Close();
-                            list.Add(attribute.Id);
-                        }
-                    }
-                    var filename = Manufactures.First(x => x.Id == product.Manufacturer_id).Name + ".txt";
-                    File.AppendAllText(filename, product.Model + " " + product.Sku + "\r\n");
+                //    List<int> list = new List<int>();
+                //    foreach (SBUpdater.Models.Attribute attribute in product.Attributes)
+                //    {
+                //        if (!list.Contains(attribute.Id))
+                //        {
+                //            string str5 = "INSERT INTO `oc_product_attribute`(`product_id`, `attribute_id`, `language_id`, `text`) \r\nVALUES (@product_id,@attribute_id,3,@text)";
+                //            MySqlCommand command5 = new MySqlCommand(str5, connection);
+                //            command5.Parameters.Add(new MySqlParameter("@product_id", LastProductId));
+                //            command5.Parameters.Add(new MySqlParameter("@attribute_id", attribute.Id));
+                //            command5.Parameters.Add(new MySqlParameter("@text", attribute.Value));
+                //            connection.Open();
+                //            command5.ExecuteNonQuery();
+                //            connection.Close();
+                //            list.Add(attribute.Id);
+                //        }
+                //    }
+                //    var filename = Manufactures.First(x => x.Id == product.Manufacturer_id).Name + ".txt";
+                //    File.AppendAllText(filename, product.Model + " " + product.Sku + "\r\n");
                 }
                 catch (MySql.Data.MySqlClient.MySqlException ex)
                 { File.AppendAllText("Error.log", ex.ToString()); }

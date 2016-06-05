@@ -91,6 +91,7 @@
     <Compile Include="Manufacturers\Bosch.cs" />
     <Compile Include="Manufacturers\Denzel.cs" />
     <Compile Include="Manufacturers\Energomash.cs" />
+    <Compile Include="Manufacturers\filters.cs" />
     <Compile Include="Manufacturers\GreenBosch.cs" />
     <Compile Include="Manufacturers\Gross.cs" />
     <Compile Include="Manufacturers\Hitachi.cs" />
